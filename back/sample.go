@@ -2,15 +2,14 @@ package main
 
 import (
 	"database/sql"
-	"github.com/jackc/pgx/pgtype"
 	"io"
 )
 
 type Sample struct {
-	Id        pgtype.UUID `json:"id"`
-	LabelId   int         `json:"labelId"`
-	LabelName string      `json:"labelName"`
-	Verdict   int         `json:"verdict"`
+	Id        UUID   `json:"id"`
+	LabelId   int    `json:"labelId"`
+	LabelName string `json:"labelName"`
+	Verdict   int    `json:"verdict"`
 }
 
 func writeSample(labelId int, data io.Reader) (_ *Sample, err error) {
@@ -71,7 +70,7 @@ func readSampleForApproval() (*Sample, error) {
 	return sample, nil
 }
 
-func writeVerdict(sampleId pgtype.UUID, verdict int) error {
+func writeVerdict(sampleId UUID, verdict int) error {
 	_, err := db.Exec("UPDATE sample SET verdict = $1 WHERE id = $2", verdict, sampleId)
 	return err
 }

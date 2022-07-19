@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/jackc/pgx/pgtype"
 	"io"
 	"os"
 )
@@ -12,7 +11,7 @@ func initFs() error {
 	return os.MkdirAll(config.Fs.Path, os.ModePerm)
 }
 
-func filenameOf(sampleId pgtype.UUID) string {
+func filenameOf(sampleId UUID) string {
 	return config.Fs.Path + fmt.Sprintf("%x", sampleId.Bytes) + config.Fs.Extension
 }
 

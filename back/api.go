@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/jackc/pgx/pgtype"
 	"net/http"
 	"strconv"
 )
@@ -141,8 +140,8 @@ func postVerdictHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	request := &struct {
-		SampleId pgtype.UUID `json:"sampleId"`
-		Verdict  int         `json:"verdict"`
+		SampleId UUID `json:"sampleId"`
+		Verdict  int  `json:"verdict"`
 	}{}
 
 	err := json.NewDecoder(r.Body).Decode(request)

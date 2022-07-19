@@ -1,24 +1,25 @@
 {
   "Db": {
-    "Host":     "localhost",
+    "Host":     "192.168.0.101",
     "Port":     5432,
     "Database": "sound_dataset",
     "User":     "sound_dataset_u",
-    "Password": "1234"
+    "Password": "so_da_hpmor"
   },
 
   "Fs": {
-    "Path": "./samples/",
+    "Path": "./static/samples/",
     "Extension": ".ogg",
     "BlockSize": 4096
   },
 
   "Api": {
-    "Address": ":8081"
+    "Address": ":8081",
+    "AdminPassword": "1234"
   },
 
   "Static": {
     "Address": ":8080",
-    "Root": "./front"
+    "Root": "./static/"
   }
 }

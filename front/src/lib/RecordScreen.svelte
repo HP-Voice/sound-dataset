@@ -67,6 +67,7 @@
             func();
         }
         if (mode === "nonsense") {
+            labelId = 1;
             let func = () => {
                 getSentence().then(s => prompt = s);
                 blobs = [];

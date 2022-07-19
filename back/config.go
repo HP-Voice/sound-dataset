@@ -14,7 +14,8 @@ var config = struct {
 		BlockSize int
 	}
 	Api struct {
-		Address string
+		Address       string
+		AdminPassword string
 	}
 	Static struct {
 		Address string

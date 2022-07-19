@@ -7,9 +7,10 @@ import (
 )
 
 type Sample struct {
-	Id       pgtype.UUID
-	LabelId  int
-	Approved bool
+	Id        pgtype.UUID `json:"id"`
+	LabelId   int         `json:"labelId"`
+	LabelName string      `json:"labelName"`
+	Verdict   int         `json:"verdict"`
 }
 
 func writeSample(labelId int, data io.Reader) (_ *Sample, err error) {
@@ -38,7 +39,10 @@ func writeSample(labelId int, data io.Reader) (_ *Sample, err error) {
 	sample := &Sample{
 		LabelId: labelId,
 	}
-	_ = rows.Scan(&sample.Id)
+	err = rows.Scan(&sample.Id)
+	if err != nil {
+		return nil, err
+	}
 
 	err = writeFile(filenameOf(sample.Id), data)
 	if err != nil {
@@ -46,4 +50,28 @@ func writeSample(labelId int, data io.Reader) (_ *Sample, err error) {
 	}
 
 	return sample, nil
+}
+
+func readSampleForApproval() (*Sample, error) {
+	row := db.QueryRow(`
+		SELECT s.id, l.name AS label_name, s.verdict 
+		FROM sample s LEFT JOIN label l ON l.id = s.label_id 
+		WHERE s.verdict = 0
+		ORDER BY s.id
+		LIMIT 1
+	`)
+	if row == nil {
+		return nil, sql.ErrNoRows
+	}
+	sample := &Sample{}
+	err := row.Scan(&sample.Id, &sample.LabelName, &sample.Verdict)
+	if err != nil {
+		return nil, err
+	}
+	return sample, nil
+}
+
+func writeVerdict(sampleId pgtype.UUID, verdict int) error {
+	_, err := db.Exec("UPDATE sample SET verdict = $1 WHERE id = $2", verdict, sampleId)
+	return err
 }

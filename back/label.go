@@ -5,13 +5,12 @@ import (
 )
 
 type Label struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
-
-	Amount int `json:"-"`
+	Id     int    `json:"id"`
+	Name   string `json:"name"`
+	Amount int    `json:"amount"`
 }
 
-func getLabels() ([]*Label, error) {
+func readLabels() ([]*Label, error) {
 	rows, err := db.Query(`SELECT id, name FROM label`)
 	if err != nil {
 		return nil, err
@@ -31,7 +30,7 @@ func getLabels() ([]*Label, error) {
 	return result, nil
 }
 
-func getRandomSpell() (int, error) {
+func getRandomSpellId() (int, error) {
 	rows, err := db.Query(`SELECT id, amount FROM label_state WHERE id > 1`)
 	if err != nil {
 		return 0, err

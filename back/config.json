@@ -1,0 +1,24 @@
+{
+  "Db": {
+    "Host":     "localhost",
+    "Port":     5432,
+    "Database": "sound_dataset",
+    "User":     "sound_dataset_u",
+    "Password": "1234"
+  },
+
+  "Fs": {
+    "Path": "./samples/",
+    "Extension": ".ogg",
+    "BlockSize": 4096
+  },
+
+  "Api": {
+    "Address": ":8081"
+  },
+
+  "Static": {
+    "Address": ":8080",
+    "Root": "./front"
+  }
+}

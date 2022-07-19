@@ -10,7 +10,7 @@
                 <td>
                     <audio src={url} class="full-width" controls></audio>
                 </td>
-                <td>
+                <td class="small">
                     <button on:click={() => onDeleteBlob(i)} class="delete">✕</button>
                 </td>
             </tr>
@@ -21,6 +21,9 @@
 <style>
     .full-width {
         width: 100%;
+    }
+    .small {
+        width: 10%;
     }
     .delete {
         background: #cd5c5c;

@@ -15,6 +15,10 @@ var config = struct {
 	}
 	Api struct {
 		Address string
+		Tls     *struct {
+			Cert string
+			Key  string
+		}
 	}
 	Static struct {
 		Address string

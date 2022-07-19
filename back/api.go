@@ -12,7 +12,11 @@ func initApi() error {
 	http.HandleFunc("/random-spell", cors(getRandomSpellHandler))
 	http.HandleFunc("/sample", cors(postSampleHandler))
 	http.HandleFunc("/sentence", cors(getSentenceHandler))
-	return http.ListenAndServe(config.Api.Address, nil)
+	if config.Api.Tls == nil {
+		return http.ListenAndServe(config.Api.Address, nil)
+	} else {
+		return http.ListenAndServeTLS(config.Api.Address, config.Api.Tls.Cert, config.Api.Tls.Key, nil)
+	}
 }
 
 func getLabelsHandler(w http.ResponseWriter, r *http.Request) {

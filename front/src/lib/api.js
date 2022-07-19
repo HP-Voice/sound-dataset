@@ -1,4 +1,4 @@
-const API_PORT = "8081"
+const API_PORT = "4431"
 export const API_URL = window.location.protocol + "//" + window.location.hostname + ":" + API_PORT + "/"
 export function getRandomSpell() {
     return new Promise(

@@ -3,8 +3,9 @@ package main
 import "context"
 
 type Stats struct {
-	Labels      []*Label `json:"labels"`
-	TotalAmount int      `json:"totalAmount"`
+	Labels              []*Label `json:"labels"`
+	TotalAmount         int      `json:"totalAmount"`
+	TotalAmountApproved int      `json:"totalAmountApproved"`
 }
 
 func readStats() (*Stats, error) {
@@ -26,6 +27,7 @@ func readStats() (*Stats, error) {
 		}
 		stats.Labels = append(stats.Labels, label)
 		stats.TotalAmount += label.Amount
+		stats.TotalAmountApproved += label.AmountApproved
 	}
 
 	return stats, nil

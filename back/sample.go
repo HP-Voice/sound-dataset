@@ -59,7 +59,7 @@ func readSampleForApproval() (*Sample, error) {
 	row := db.QueryRow(ctx, `
 		SELECT s.id, l.name AS label_name, s.verdict 
 		FROM sample s LEFT JOIN label l ON l.id = s.label_id 
-		WHERE s.verdict = 0
+		WHERE s.verdict = 0 AND s.label_id > 1
 		ORDER BY s.id
 		LIMIT 1
 	`)

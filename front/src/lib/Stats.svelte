@@ -41,6 +41,7 @@
             </tbody>
         </table>
         <p>Total amount: {stats.totalAmount}</p>
+        <p>Total approved: {stats.totalAmountApproved}</p>
     {/if}
 </div>
 

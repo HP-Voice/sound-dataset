@@ -58,7 +58,89 @@ export function getSentence() {
                     }
                     resolve(await response.text());
                 })
-                .catch(reason => reject(reason))
+                .catch(reason => reject(reason));
         }
     )
+}
+
+export let password = "";
+
+export function getStats() {
+    return new Promise(
+        (resolve, reject) => {
+            fetch(API_URL + "admin/stats", {
+                headers: {
+                    "Admin-Password": password,
+                },
+            })
+                .then(async response => {
+                    if (response.status !== 200) {
+                        reject(response.status + " " + await response.text());
+                    }
+                    resolve(JSON.parse(await response.text()));
+                })
+                .catch(reason => reject(reason));
+        }
+    )
+}
+export function getSampleForApproval() {
+    return new Promise(
+        (resolve, reject) => {
+            fetch(API_URL + "admin/sample-for-approval", {
+                headers: {
+                    "Admin-Password": password,
+                },
+            })
+                .then(async response => {
+                    if (response.status !== 200) {
+                        reject(response.status + " " + await response.text());
+                    }
+                    resolve(JSON.parse(await response.text()));
+                })
+                .catch(reason => reject(reason));
+        }
+    )
+}
+export function postVerdict(sampleId, verdict) {
+    return new Promise(
+        (resolve, reject) => {
+            fetch(API_URL + "admin/verdict", {
+                method: "POST",
+                headers: {
+                    "Admin-Password": password,
+                },
+                body: JSON.stringify({sampleId, verdict}),
+            })
+                .then(async response => {
+                    if (response.status !== 200) {
+                        reject(response.status + " " + await response.text());
+                    }
+                    resolve();
+                })
+                .catch(reason => reject(reason));
+        }
+    );
+}
+export function auth(p) {
+    return new Promise((resolve, reject) => {
+        fetch(API_URL + "admin", {
+            headers: {
+                "Admin-Password": p,
+            },
+        })
+            .then(async response => {
+                if (response.status === 200) {
+                    password = p;
+                    resolve();
+                }
+                else {
+                    password = "";
+                    reject();
+                }
+            })
+            .catch(() => {
+                password = "";
+                reject();
+            });
+    });
 }

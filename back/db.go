@@ -1,10 +1,18 @@
 package main
 
-import "github.com/jackc/pgx"
+import (
+	"context"
+	"github.com/jackc/pgx/v4/pgxpool"
+)
 
-var db *pgx.Conn
+var db *pgxpool.Pool
 
-func initDb() (err error) {
-	db, err = pgx.Connect(config.Db)
-	return
+func initDb() error {
+	ctx := context.Background()
+	cfg, err := pgxpool.ParseConfig(config.Db)
+	if err != nil {
+		return err
+	}
+	db, err = pgxpool.ConnectConfig(ctx, cfg)
+	return err
 }

@@ -1,12 +1,15 @@
 package main
 
+import "context"
+
 type Stats struct {
-	Labels      []*Label
-	TotalAmount int
+	Labels      []*Label `json:"labels"`
+	TotalAmount int      `json:"totalAmount"`
 }
 
 func readStats() (*Stats, error) {
-	rows, err := db.Query("SELECT id, name, amount FROM label_state")
+	ctx := context.Background()
+	rows, err := db.Query(ctx, "SELECT id, name, amount FROM label_state")
 	if err != nil {
 		return nil, err
 	}

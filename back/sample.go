@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"io"
 	"os"
@@ -14,19 +15,20 @@ type Sample struct {
 }
 
 func writeSample(labelId int, data io.Reader) (_ *Sample, err error) {
-	tx, err := db.Begin()
+	ctx := context.Background()
+	tx, err := db.Begin(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer func() {
 		if err == nil {
-			_ = tx.Commit()
+			_ = tx.Commit(ctx)
 		} else {
-			_ = tx.Rollback()
+			_ = tx.Rollback(ctx)
 		}
 	}()
 
-	rows, err := tx.Query(`INSERT INTO sample (label_id) VALUES ($1) RETURNING id`, labelId)
+	rows, err := tx.Query(ctx, `INSERT INTO sample (label_id) VALUES ($1) RETURNING id`, labelId)
 	if err != nil {
 		return nil, err
 	}
@@ -53,16 +55,14 @@ func writeSample(labelId int, data io.Reader) (_ *Sample, err error) {
 }
 
 func readSampleForApproval() (*Sample, error) {
-	row := db.QueryRow(`
+	ctx := context.Background()
+	row := db.QueryRow(ctx, `
 		SELECT s.id, l.name AS label_name, s.verdict 
 		FROM sample s LEFT JOIN label l ON l.id = s.label_id 
 		WHERE s.verdict = 0
 		ORDER BY s.id
 		LIMIT 1
 	`)
-	if row == nil {
-		return nil, sql.ErrNoRows
-	}
 	sample := &Sample{}
 	err := row.Scan(&sample.Id, &sample.LabelName, &sample.Verdict)
 	if err != nil {
@@ -72,24 +72,26 @@ func readSampleForApproval() (*Sample, error) {
 }
 
 func writeVerdict(sampleId UUID, verdict int) error {
-	_, err := db.Exec("UPDATE sample SET verdict = $1 WHERE id = $2", verdict, sampleId)
+	ctx := context.Background()
+	_, err := db.Exec(ctx, "UPDATE sample SET verdict = $1 WHERE id = $2", verdict, sampleId.Bytes)
 	return err
 }
 
 func cleanSamples() (err error) {
-	tx, err := db.Begin()
+	ctx := context.Background()
+	tx, err := db.Begin(ctx)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		if err == nil {
-			_ = tx.Commit()
+			_ = tx.Commit(ctx)
 		} else {
-			_ = tx.Rollback()
+			_ = tx.Rollback(ctx)
 		}
 	}()
 
-	rows, err := tx.Query(`SELECT id FROM sample`)
+	rows, err := tx.Query(ctx, `SELECT id FROM sample`)
 	if err != nil {
 		return err
 	}
@@ -114,7 +116,7 @@ func cleanSamples() (err error) {
 	}
 
 	for _, c := range clean {
-		_, err = tx.Exec(`DELETE FROM sample WHERE id = $1`, c.Bytes)
+		_, err = tx.Exec(ctx, `DELETE FROM sample WHERE id = $1`, c.Bytes)
 		if err != nil {
 			return err
 		}

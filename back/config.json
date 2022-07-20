@@ -1,11 +1,5 @@
 {
-  "Db": {
-    "Host":     "localhost",
-    "Port":     5432,
-    "Database": "sound_dataset",
-    "User":     "sound_dataset_u",
-    "Password": "so_da_hpmor"
-  },
+  "Db": "postgres://sound_dataset_u:1234@localhost:5432/sound_dataset?sslmode=disabled&pool_max_conns=10",
 
   "Fs": {
     "Path": "./static/samples/",

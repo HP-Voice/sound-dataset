@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"math/rand"
 )
 
@@ -11,7 +12,8 @@ type Label struct {
 }
 
 func readLabels() ([]*Label, error) {
-	rows, err := db.Query(`SELECT id, name FROM label`)
+	ctx := context.Background()
+	rows, err := db.Query(ctx, `SELECT id, name FROM label`)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +33,8 @@ func readLabels() ([]*Label, error) {
 }
 
 func getRandomSpellId() (int, error) {
-	rows, err := db.Query(`SELECT id, amount FROM label_state WHERE id > 1`)
+	ctx := context.Background()
+	rows, err := db.Query(ctx, `SELECT id, amount FROM label_state WHERE id > 1`)
 	if err != nil {
 		return 0, err
 	}

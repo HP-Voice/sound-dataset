@@ -13,7 +13,7 @@ func base() {
 		log.Fatal(err)
 	}
 
-	log.Printf("db initializing on %s@%s:%d/%s\n", config.Db.User, config.Db.Host, config.Db.Port, config.Db.Database)
+	log.Printf("db initializing on %s", config.Db)
 	err = initDb()
 	if err != nil {
 		log.Fatal(err)

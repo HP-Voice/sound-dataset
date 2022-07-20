@@ -2,12 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/jackc/pgx"
 	"os"
 )
 
 var config = struct {
-	Db pgx.ConnConfig
+	Db string
 	Fs struct {
 		Path      string
 		Extension string

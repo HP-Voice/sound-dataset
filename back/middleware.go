@@ -4,7 +4,14 @@ import "net/http"
 
 func cors(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		origin := r.Header.Get("Origin")
+		if origin == "http://localhost:5173" || origin == "http://localhost:8080" || origin == "https://uquark.me" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+		}
+		w.Header().Set("Access-Control-Allow-Headers", "Admin-Password")
+		if r.Method == http.MethodOptions {
+			return
+		}
 		next(w, r)
 	}
 }

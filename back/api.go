@@ -11,6 +11,7 @@ func initApi() error {
 	http.HandleFunc("/random-spell", cors(getRandomSpellHandler))
 	http.HandleFunc("/sample", cors(postSampleHandler))
 	http.HandleFunc("/sentence", cors(getSentenceHandler))
+	http.HandleFunc("/admin", cors(admin(okHandler)))
 	http.HandleFunc("/admin/stats", cors(admin(getStatsHandler)))
 	http.HandleFunc("/admin/sample-for-approval", cors(admin(getSampleForApprovalHandler)))
 	http.HandleFunc("/admin/verdict", cors(admin(postVerdictHandler)))
@@ -158,3 +159,5 @@ func postVerdictHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func okHandler(_ http.ResponseWriter, _ *http.Request) {}

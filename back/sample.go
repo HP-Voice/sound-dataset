@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"io"
+	"os"
 )
 
 type Sample struct {
@@ -73,4 +74,51 @@ func readSampleForApproval() (*Sample, error) {
 func writeVerdict(sampleId UUID, verdict int) error {
 	_, err := db.Exec("UPDATE sample SET verdict = $1 WHERE id = $2", verdict, sampleId)
 	return err
+}
+
+func cleanSamples() (err error) {
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err == nil {
+			_ = tx.Commit()
+		} else {
+			_ = tx.Rollback()
+		}
+	}()
+
+	rows, err := tx.Query(`SELECT id FROM sample`)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+
+	clean := make([]UUID, 0)
+
+	for rows.Next() {
+		uuid := UUID{}
+		err = rows.Scan(&uuid)
+		if err != nil {
+			panic(err)
+		}
+		_, err = os.Stat(filenameOf(uuid))
+		if err != nil {
+			if os.IsNotExist(err) {
+				clean = append(clean, uuid)
+				continue
+			}
+			return err
+		}
+	}
+
+	for _, c := range clean {
+		_, err = tx.Exec(`DELETE FROM sample WHERE id = $1`, c.Bytes)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

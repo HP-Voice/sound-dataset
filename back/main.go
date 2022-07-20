@@ -1,17 +1,14 @@
 package main
 
-import "log"
+import (
+	"log"
+	"os"
+)
 
-func main() {
+func base() {
 	initFlags()
 
 	err := initConfig(*flags.config)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Printf("markov initializing")
-	err = initMarkov()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,6 +26,26 @@ func main() {
 	}
 
 	initRandom()
+}
+
+func clean() {
+	if *flags.clean {
+		log.Printf("cleaning up...")
+		err := cleanSamples()
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("done")
+		os.Exit(0)
+	}
+}
+
+func service() {
+	log.Printf("markov initializing")
+	err := initMarkov()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	log.Printf("api server initializing on %s\n", config.Api.Address)
 	go func() {
@@ -45,6 +62,11 @@ func main() {
 			log.Fatal(err)
 		}
 	}()
+}
 
+func main() {
+	base()
+	clean()
+	service()
 	select {}
 }

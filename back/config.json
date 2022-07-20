@@ -1,6 +1,6 @@
 {
   "Db": {
-    "Host":     "192.168.0.101",
+    "Host":     "localhost",
     "Port":     5432,
     "Database": "sound_dataset",
     "User":     "sound_dataset_u",

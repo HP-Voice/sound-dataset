@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"os"
 )
@@ -12,7 +11,7 @@ func initFs() error {
 }
 
 func filenameOf(sampleId UUID) string {
-	return config.Fs.Path + fmt.Sprintf("%x", sampleId.Bytes) + config.Fs.Extension
+	return config.Fs.Path + sampleId.String() + config.Fs.Extension
 }
 
 func writeFile(filename string, data io.Reader) error {

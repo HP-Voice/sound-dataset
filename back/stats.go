@@ -10,6 +10,7 @@ func readStats() (*Stats, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	stats := &Stats{
 		Labels: make([]*Label, 0),

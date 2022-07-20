@@ -2,7 +2,7 @@ all:
 	cd ./back; go build
 	cd ./front; npm run build
 	mkdir -p ./build/static
-	mv ./back/back ./build/server
-	cp ./back/config.json ./build/
-	mv ./front/dist/* ./build/static
-	cp ./markov/* ./build/
+	cp -rf ./back/back ./build/server
+	cp -rf ./back/config.json ./build/
+	cp -rf ./front/dist/* ./build/static
+	cp -rf ./markov/* ./build/

@@ -8,7 +8,7 @@ func cors(next http.HandlerFunc) http.HandlerFunc {
 		if origin == "http://localhost:5173" || origin == "http://localhost:8080" || origin == "https://uquark.me" {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 		}
-		w.Header().Set("Access-Control-Allow-Headers", "Admin-Password")
+		w.Header().Set("Access-Control-Allow-Headers", "Session")
 		if r.Method == http.MethodOptions {
 			return
 		}

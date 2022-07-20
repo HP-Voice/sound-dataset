@@ -123,7 +123,7 @@ export function postVerdict(sampleId, verdict) {
 }
 export function auth(p) {
     return new Promise((resolve, reject) => {
-        fetch(API_URL + "admin", {
+        fetch(API_URL + "admin/auth", {
             method: "POST",
             body: JSON.stringify({
                 password: p,

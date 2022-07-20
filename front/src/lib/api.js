@@ -63,14 +63,14 @@ export function getSentence() {
     )
 }
 
-export let password = "";
+export let session = "";
 
 export function getStats() {
     return new Promise(
         (resolve, reject) => {
             fetch(API_URL + "admin/stats", {
                 headers: {
-                    "Admin-Password": password,
+                    "Session": session,
                 },
             })
                 .then(async response => {
@@ -88,7 +88,7 @@ export function getSampleForApproval() {
         (resolve, reject) => {
             fetch(API_URL + "admin/sample-for-approval", {
                 headers: {
-                    "Admin-Password": password,
+                    "Session": session,
                 },
             })
                 .then(async response => {
@@ -107,7 +107,7 @@ export function postVerdict(sampleId, verdict) {
             fetch(API_URL + "admin/verdict", {
                 method: "POST",
                 headers: {
-                    "Admin-Password": password,
+                    "Session": session,
                 },
                 body: JSON.stringify({sampleId, verdict}),
             })
@@ -124,22 +124,23 @@ export function postVerdict(sampleId, verdict) {
 export function auth(p) {
     return new Promise((resolve, reject) => {
         fetch(API_URL + "admin", {
-            headers: {
-                "Admin-Password": p,
-            },
+            method: "POST",
+            body: JSON.stringify({
+                password: p,
+            }),
         })
             .then(async response => {
                 if (response.status === 200) {
-                    password = p;
+                    session = await JSON.parse(response.text());
                     resolve();
                 }
                 else {
-                    password = "";
+                    session = "";
                     reject();
                 }
             })
             .catch(() => {
-                password = "";
+                session = "";
                 reject();
             });
     });

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/jackc/pgx/pgtype"
+	"math/rand"
 )
 
 type UUID struct {
@@ -38,4 +39,14 @@ func (u *UUID) UnmarshalJSON(data []byte) error {
 
 func (u *UUID) String() string {
 	return fmt.Sprintf("%x", u.Bytes)
+}
+
+var alphabet = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+
+func randomString(length int) string {
+	result := make([]rune, length)
+	for i := range result {
+		result[i] = alphabet[rand.Intn(len(alphabet))]
+	}
+	return string(result)
 }

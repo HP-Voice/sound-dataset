@@ -12,7 +12,7 @@ func initApi() error {
 	http.HandleFunc("/random-spell", cors(getRandomSpellHandler))
 	http.HandleFunc("/sample", cors(postSampleHandler))
 	http.HandleFunc("/sentence", cors(getSentenceHandler))
-	http.HandleFunc("/admin", cors(admin(authHandler)))
+	http.HandleFunc("/admin/auth", cors(authHandler))
 	http.HandleFunc("/admin/stats", cors(admin(getStatsHandler)))
 	http.HandleFunc("/admin/sample-for-approval", cors(admin(getSampleForApprovalHandler)))
 	http.HandleFunc("/admin/verdict", cors(admin(postVerdictHandler)))
@@ -161,7 +161,32 @@ func postVerdictHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func authHandler(_ http.ResponseWriter, _ *http.Request) {
+func authHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	request := struct {
+		Password string `json:"password"`
+	}{}
+
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = w.Write([]byte(err.Error()))
+		return
+	}
+
 	// bruteforce protection
 	time.Sleep(3 * time.Second)
+
+	session, err := createSession(request.Password)
+	if err != nil {
+		w.WriteHeader(http.StatusForbidden)
+		_, _ = w.Write([]byte(err.Error()))
+		return
+	}
+
+	_ = json.NewEncoder(w).Encode(session)
 }

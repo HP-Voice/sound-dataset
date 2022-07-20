@@ -131,7 +131,7 @@ export function auth(p) {
         })
             .then(async response => {
                 if (response.status === 200) {
-                    session = await JSON.parse(response.text());
+                    session = JSON.parse(await response.text());
                     resolve();
                 }
                 else {

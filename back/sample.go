@@ -4,7 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"io"
+	"io/fs"
 	"os"
+	"path/filepath"
 )
 
 type Sample struct {
@@ -78,6 +80,15 @@ func writeVerdict(sampleId UUID, verdict int) error {
 }
 
 func cleanSamples() (err error) {
+	err = filepath.Walk(config.Fs.Path, func(path string, info fs.FileInfo, _ error) error {
+		if !info.IsDir() && info.Size() == 0 {
+			return os.Remove(path)
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
 	ctx := context.Background()
 	tx, err := db.Begin(ctx)
 	if err != nil {

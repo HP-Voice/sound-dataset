@@ -23,6 +23,7 @@ func writeFile(filename string, data io.Reader) error {
 
 	buffer := make([]byte, config.Fs.BlockSize)
 	more := true
+	totalRead := 0
 	for more {
 		read, err := data.Read(buffer)
 		if err != nil {
@@ -35,11 +36,15 @@ func writeFile(filename string, data io.Reader) error {
 		if read == 0 {
 			break
 		}
+		totalRead += read
 		_, err = file.Write(buffer[:read])
 		if err != nil {
 			return err
 		}
 	}
 
+	if totalRead == 0 {
+		return errors.New("empty files not allowed")
+	}
 	return nil
 }

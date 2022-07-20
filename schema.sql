@@ -84,7 +84,8 @@ CREATE VIEW public.label_state AS
 SELECT
     NULL::integer AS id,
     NULL::character varying(256) AS name,
-    NULL::bigint AS amount;
+    NULL::bigint AS amount,
+    NULL::bigint AS amount_approved;
 
 
 ALTER TABLE public.label_state OWNER TO sound_dataset_u;
@@ -96,7 +97,7 @@ ALTER TABLE public.label_state OWNER TO sound_dataset_u;
 CREATE TABLE public.sample (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     label_id integer NOT NULL,
-    approved boolean DEFAULT false NOT NULL
+    verdict integer DEFAULT 0 NOT NULL
 );
 
 
@@ -126,17 +127,17 @@ ALTER TABLE ONLY public.sample
 
 
 --
--- Name: sample_approved_index; Type: INDEX; Schema: public; Owner: sound_dataset_u
---
-
-CREATE INDEX sample_approved_index ON public.sample USING btree (approved);
-
-
---
 -- Name: sample_label_id_index; Type: INDEX; Schema: public; Owner: sound_dataset_u
 --
 
 CREATE INDEX sample_label_id_index ON public.sample USING btree (label_id);
+
+
+--
+-- Name: sample_verdict_index; Type: INDEX; Schema: public; Owner: sound_dataset_u
+--
+
+CREATE INDEX sample_verdict_index ON public.sample USING btree (verdict);
 
 
 --
@@ -146,7 +147,12 @@ CREATE INDEX sample_label_id_index ON public.sample USING btree (label_id);
 CREATE OR REPLACE VIEW public.label_state AS
  SELECT l.id,
     l.name,
-    count(s.id) AS amount
+    count(s.id) AS amount,
+    sum(
+        CASE
+            WHEN (s.verdict = 1) THEN 1
+            ELSE 0
+        END) AS amount_approved
    FROM (public.label l
      LEFT JOIN public.sample s ON ((s.label_id = l.id)))
   GROUP BY l.id

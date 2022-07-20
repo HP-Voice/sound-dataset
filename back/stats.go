@@ -9,7 +9,7 @@ type Stats struct {
 
 func readStats() (*Stats, error) {
 	ctx := context.Background()
-	rows, err := db.Query(ctx, "SELECT id, name, amount FROM label_state")
+	rows, err := db.Query(ctx, "SELECT id, name, amount, amount_approved FROM label_state")
 	if err != nil {
 		return nil, err
 	}
@@ -20,7 +20,7 @@ func readStats() (*Stats, error) {
 	}
 	for rows.Next() {
 		label := &Label{}
-		err = rows.Scan(&label.Id, &label.Name, &label.Amount)
+		err = rows.Scan(&label.Id, &label.Name, &label.Amount, &label.AmountApproved)
 		if err != nil {
 			return nil, err
 		}

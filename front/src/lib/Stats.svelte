@@ -24,6 +24,9 @@
                 <th>
                     Amount
                 </th>
+                <th>
+                    Approved
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -32,6 +35,7 @@
                     <td>{label.id}</td>
                     <td>{label.name}</td>
                     <td>{label.amount}</td>
+                    <td>{label.amountApproved}</td>
                 </tr>
             {/each}
             </tbody>

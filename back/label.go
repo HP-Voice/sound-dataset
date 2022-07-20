@@ -6,9 +6,10 @@ import (
 )
 
 type Label struct {
-	Id     int    `json:"id"`
-	Name   string `json:"name"`
-	Amount int    `json:"amount"`
+	Id             int    `json:"id"`
+	Name           string `json:"name"`
+	Amount         int    `json:"amount"`
+	AmountApproved int    `json:"amountApproved"`
 }
 
 func readLabels() ([]*Label, error) {
